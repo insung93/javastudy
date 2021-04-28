@@ -10,11 +10,12 @@ public class TV {
 	}
 
 	public void channel(boolean up) {
-		if(up) {
-			channel(this.channel+1);
-		} else {
-			channel(this.channel-1);
-		}
+		channel(channel + (up ? 1 : -1));
+//		if(up) {
+//			channel(this.channel+1);
+//		} else {
+//			channel(this.channel-1);
+//		}
 	}
 
 	public void channel(int channel) {
@@ -35,11 +36,12 @@ public class TV {
 	}
 
 	public void volume(boolean up) {
-		if(up) {
-			volume(this.volume+1);
-		}else {
-			volume(this.volume-1);
-		}
+		volume(volume + (up ? 1 : -1));
+//		if(up) {
+//			volume(this.volume+1);
+//		}else {
+//			volume(this.volume-1);
+//		}
 	}
 
 	public void volume(int volume) {
