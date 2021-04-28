@@ -12,6 +12,10 @@ public class SongTest {
 		song.setYear(2010);
 		
 		song.show();
+		
+		Song song2 = new Song("롤린","브레이브걸스");
+		
+		song2.show();
 	}
 
 }
