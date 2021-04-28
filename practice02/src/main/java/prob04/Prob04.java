@@ -14,10 +14,8 @@ public class Prob04 {
 		/* 코드를 완성합니다 */
 		char[] a = new char[str.length()];
 
-		for (int i = 0; i < a.length ; i++) {
+		for (int i = 0; i < a.length ; i++)
 			a[i] = str.charAt(a.length - i - 1);
-		}
-
 		return a;
 	}
 
