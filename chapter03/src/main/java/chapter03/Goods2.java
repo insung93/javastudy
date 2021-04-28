@@ -27,6 +27,7 @@ public class Goods2 {
 
 	public int getCountSold() {
 		return countSold;
+		
 	}
 
 	public void setCountSold(int countSold) {
@@ -44,6 +45,16 @@ public class Goods2 {
 	public void showInfo() {
 		System.out.println(
 				"name : " + name + ", price : " + price + ", countStock : " + countStock + ", countSold : " + countSold);
+	}
+	
+	public int calcDiscountPrice(double rate) {
+		int i =10;
+		double d = (double)i;
+		
+//		double d2 = 2.5;
+//		int i2 = d2
+		int discountPrice = (int)(price * rate);
+		return discountPrice;
 	}
 
 }
