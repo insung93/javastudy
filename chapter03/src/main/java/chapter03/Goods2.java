@@ -6,6 +6,17 @@ public class Goods2 {
 	private int countSold;
 	private int countStock;
 
+	public Goods2(String name, int price, int countSold, int countStock) {
+		this.name = name;
+		this.price = price;
+		this.countSold = countSold;
+		this.countStock = countStock;
+	}
+	public Goods2() {
+		
+	}
+	
+	
 	public String getName() {
 		return name;
 	}

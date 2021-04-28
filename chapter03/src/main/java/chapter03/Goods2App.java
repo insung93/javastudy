@@ -14,7 +14,9 @@ public class Goods2App {
 		
 		goods.setPrice(-1);
 		goods.showInfo();
-
+		
+		Goods2 goods2 = new Goods2("cannon",20000,20,30);
+		goods2.showInfo();
 	}
 
 }
