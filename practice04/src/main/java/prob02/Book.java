@@ -19,11 +19,10 @@ public class Book {
 	}
 
 	public void print() {
-		System.out.print("책 제목 : "+this.title+",\t 작가 : "+this.author+", \t 대여유무 : ");
 		if(this.stateCode==1) {
-			System.out.println("재고있음");
+			System.out.print("재고있음");
 		}else {
-			System.out.println("대여중");
+			System.out.print("대여중");
 		}
 	}
 
