@@ -1,6 +1,6 @@
 package paint;
 
-public class Point {
+public class Point implements Drawable {
 	private int x;
 	private int y;
 	
@@ -8,10 +8,7 @@ public class Point {
 		this.x = x;
 		this.y = y;
 	}
-	public Point() {
-		
-	}
-	
+
 	public int getX() {
 		return x;
 	}
@@ -34,5 +31,10 @@ public class Point {
 			System.out.println("점["+ x + "," + y + "]에 점을 지웠습니다.");
 		}
 		
+	}
+
+	@Override
+	public void draw() {
+		show();
 	}
 }
