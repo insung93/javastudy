@@ -15,3 +15,4 @@ public class Prob1 {
 		scanner.close();
 	}
 }
+ 
