@@ -17,7 +17,7 @@ public class ArraylistTest {
 		int count = list.size();
 		for (int i = 0; i < count; i++) {
 			String s = list.get(i);
-			System.out.println(s);
+			System.out.println(s); 
 		}
 
 		list.remove(2);
