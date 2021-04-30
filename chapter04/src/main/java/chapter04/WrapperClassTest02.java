@@ -17,6 +17,8 @@ public class WrapperClassTest02 {
 		int a = Character.getNumericValue('A');
 		System.out.println(a);
 		
+		
+		
 		// 2진수
 		String s4 = Integer.toBinaryString(15);
 		System.out.println(s4);
