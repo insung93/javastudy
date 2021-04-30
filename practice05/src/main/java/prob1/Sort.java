@@ -13,7 +13,7 @@ public class Sort {
 			System.out.print(array[i] + " ");
 		}
 
-		//
+		// 
 		// 정렬 알고리즘이 적용된 코드를 여기에 작성합니다.
 		//
 		int temp;
