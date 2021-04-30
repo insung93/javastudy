@@ -49,10 +49,14 @@ public class PaintApp {
 		// instanceof test
 		// s + 10
 		// s instanceof s
-		
+		System.out.println("=======================");
 		System.out.println(circle instanceof Object);
 		System.out.println(circle instanceof Shape);
 		System.out.println(circle instanceof Circle);
+		System.out.println(circle instanceof Drawable);
+		System.out.println("=======================");
+		System.out.println(circle.getClass());
+		System.out.println(circle.getClass().getName());
 		// 오류 : class hierachy 상위와 하위만
 		// 		 instanceof 연산자를 사용할 수 있다.
 		// System.out.println(circle instanceof Rect);
