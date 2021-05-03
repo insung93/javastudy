@@ -18,6 +18,22 @@ public class Gugudan {
 		return result;
 	}
 
+	public int getLeft() {
+		return left;
+	}
+
+	public void setLeft(int left) {
+		this.left = left;
+	}
+
+	public int getRight() {
+		return right;
+	}
+
+	public void setRight(int right) {
+		this.right = right;
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
