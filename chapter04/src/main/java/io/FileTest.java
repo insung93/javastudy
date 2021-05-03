@@ -1,4 +1,4 @@
-package exception;
+package io;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -9,7 +9,7 @@ public class FileTest {
 	public static void main(String[] args) {
 		FileInputStream fis = null;
 		try {
-			fis = new FileInputStream("hello.txt");
+			fis = new FileInputStream("./hello.txt");
 			int data = fis.read();
 			System.out.println(data);
 		} catch (FileNotFoundException e) {
