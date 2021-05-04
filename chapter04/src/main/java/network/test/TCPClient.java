@@ -1,13 +1,14 @@
-package network;
+package network.test;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class TCPClient {
-	private static final String SEVER_IP = "192.168.80.7";
+	private static final String SERVER_IP = "192.168.80.7";
 	private static final int SERVER_PORT = 5000;
 
 	public static void main(String[] args) {
@@ -16,7 +17,7 @@ public class TCPClient {
 			// 1. 소켓 생성
 			socket = new Socket();
 			// 2. 서버 연결
-			socket.connect(new InetSocketAddress(SEVER_IP, SERVER_PORT));
+			socket.connect(new InetSocketAddress(SERVER_IP, SERVER_PORT));
 			System.out.println("[client] connected]");
 
 			// 3. IO Stream 받아오기
@@ -38,7 +39,9 @@ public class TCPClient {
 			data = new String(buffer, 0, readByteCount, "utf-8");
 			System.out.println("[client] received:" + data);
 
-		} catch (IOException e) {
+		} catch (SocketException e) {
+			System.out.println("suddenly closed by server");
+		}catch (IOException e) {
 			e.printStackTrace();
 		} finally {
 			try {
