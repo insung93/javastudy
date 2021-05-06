@@ -65,6 +65,10 @@ public class RequestHandler extends Thread {
 				/* Simple Http Server 에서는 무시 */
 				
 				// 응답 예시
+//				HTTP/1.1 400 Bad Request \r\n
+//				Content-Type:text/html; charset=utf-8\r\n
+//				\r\n
+//				HTML 에러 문서 (./webapp/error/400.html)
 				String url = "/error/400.html";
 				File file = new File(DOCUMENTROOT+url);
 				
@@ -75,10 +79,7 @@ public class RequestHandler extends Thread {
 				os.write("\r\n".getBytes());
 				os.write(body);
 				
-//				HTTP/1.1 400 Bad Request \r\n
-//				Content-Type:text/html; charset=utf-8\r\n
-//				\r\n
-//				HTML 에러 문서 (./webapp/error/400.html)
+
 				
 
 				
@@ -116,6 +117,10 @@ public class RequestHandler extends Thread {
 		File file = new File(DOCUMENTROOT + url);
 		if (file.exists() == false) {
 			// 응답 예시
+//			HTTP/1.1 404 File Not Found \r\n
+//			Content-Type:text/html; charset=utf-8\r\n
+//			\r\n
+//			HTML 에러 문서 (./webapp/error/404.html)
 			url = "/error/404.html";
 			file = new File(DOCUMENTROOT+url);
 			
@@ -126,10 +131,7 @@ public class RequestHandler extends Thread {
 			os.write("\r\n".getBytes());
 			os.write(body);
 			
-//			HTTP/1.1 404 File Not Found \r\n
-//			Content-Type:text/html; charset=utf-8\r\n
-//			\r\n
-//			HTML 에러 문서 (./webapp/error/404.html)
+
 
 			
 			// response404Error(os,url,protocol);
