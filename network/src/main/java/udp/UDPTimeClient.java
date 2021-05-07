@@ -21,7 +21,6 @@ public class UDPTimeClient {
 			// 2. 소켓 생성
 			socket = new DatagramSocket();
 
-			while (true) {
 
 				// 4. 데이터 쓰기
 				byte[] sendData = "".getBytes("UTF-8");
@@ -40,7 +39,7 @@ public class UDPTimeClient {
 
 				// 8. 콘솔 출력
 				System.out.println("<" + message);
-			}
+
 
 		} catch (IOException e) {
 			e.printStackTrace();
