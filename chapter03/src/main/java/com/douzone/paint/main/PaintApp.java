@@ -17,7 +17,7 @@ public class PaintApp {
 		Point point1 = new Point(10, 20);
 		point1.show();
 		point1.show(false);
-
+  
 		Point point2 = new Point(100, 200);
 		// point2.show();
 		// drawPoint(point2);
