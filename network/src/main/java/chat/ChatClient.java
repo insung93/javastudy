@@ -11,8 +11,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
 public class ChatClient {
-	static final String SERVER_IP = "127.0.0.1";
-	static final int SERVER_PORT = 7100;
 
 	public static void main(String[] args) {
 		Scanner scanner = null;
@@ -27,7 +25,7 @@ public class ChatClient {
 			socket = new Socket();
 
 			// 3. 연결
-			socket.connect(new InetSocketAddress(SERVER_IP, SERVER_PORT));
+			socket.connect(new InetSocketAddress(ChatServer.SERVER_IP, ChatServer.SERVER_PORT));
 			// 4. reader/writer 생성
 			br = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
 			pw = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
@@ -39,7 +37,7 @@ public class ChatClient {
 			pw.flush();
 
 			// 6. ChatClientReceiveThread 시작
-			new ChatClientThread(socket);
+			new ChatClientThread(socket).start();
 			
 			// 7. 키보드 입력 처리
 			while (true) {

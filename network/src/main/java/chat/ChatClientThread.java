@@ -45,8 +45,6 @@ public class ChatClientThread extends Thread {
 			}
 		}
 
-		super.run();
-
 	}
 
 	private static void log(String log) {

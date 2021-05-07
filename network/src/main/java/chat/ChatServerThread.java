@@ -23,7 +23,7 @@ public class ChatServerThread extends Thread {
 	}
 
 	@Override
-	public void run() {
+	public void run() {  
 
 		BufferedReader br = null;
 		PrintWriter pw = null;
@@ -33,11 +33,11 @@ public class ChatServerThread extends Thread {
 //		String remoteHostAddress = inetRemoteSocketAddress.getAddress().getHostAddress();
 //		int remoteHostPort = inetRemoteSocketAddress.getPort();
 
-		try {
+		try {      
 			br = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
 			pw = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
 
-			while (true) {
+			while (true) {  
 				String request = br.readLine();
 				if (request == null) {
 					doQuit(pw);
@@ -62,12 +62,17 @@ public class ChatServerThread extends Thread {
 
 		} catch (SocketException e) {
 			e.printStackTrace();
+			doQuit(pw);
 		} catch (IOException e) {
 			e.printStackTrace();
+			doQuit(pw);
 		} finally {
 			try {
-				socket.close();
-			} catch (IOException e) {
+				if( socket != null &&
+					socket.isClosed() == false ) {
+					socket.close();
+				}
+			}catch( IOException e ) {
 				e.printStackTrace();
 			}
 		}
@@ -82,10 +87,8 @@ public class ChatServerThread extends Thread {
 	}
 
 	private void removeWriter(PrintWriter pw) {
-		try {
-			socket.close();
-		} catch (IOException e) {
-			e.printStackTrace();
+		synchronized (listWriters) {
+			listWriters.remove(pw);
 		}
 	}
 
@@ -108,7 +111,6 @@ public class ChatServerThread extends Thread {
 
 		// ack
 		pw.println("join:ok");
-		pw.flush();
 	}
 
 	private void broadCast(String data) {
@@ -116,7 +118,6 @@ public class ChatServerThread extends Thread {
 			for (Writer writer : listWriters) {
 				PrintWriter printWriter = (PrintWriter) writer;
 				printWriter.println(data);
-				printWriter.flush();
 			}
 		}
 	}
