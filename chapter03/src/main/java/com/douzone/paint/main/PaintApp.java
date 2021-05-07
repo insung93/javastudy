@@ -32,7 +32,7 @@ public class PaintApp {
 		Rect rect = new Rect();
 		// drawRect(rect);
 		//drawShape(rect);
-		draw(rect);
+		draw(rect);  
 
 		Triangle triangle = new Triangle();
 		// drawTriangle(triangle);
