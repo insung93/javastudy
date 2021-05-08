@@ -12,60 +12,70 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.SocketException;
+import java.util.List;
+
 public class ChatServerThread extends Thread {
-	private String nickname;
 	private Socket socket;
-	List<PrintWriter> listWriters;
-
-	public ChatServerThread(Socket socket, List<PrintWriter> listPrintWriter) {
+	private String name;
+	private List<PrintWriter> listPrintWriter;
+	
+	public ChatServerThread( Socket socket, List<PrintWriter> listPrintWriter ) {
 		this.socket = socket;
-		this.listWriters = listWriters;
+		this.listPrintWriter = listPrintWriter;
 	}
-
+	
 	@Override
-	public void run() {  
-
+	public void run() {
 		BufferedReader br = null;
 		PrintWriter pw = null;
-		listWriters = new ArrayList<PrintWriter>();
-
-//		InetSocketAddress inetRemoteSocketAddress = (InetSocketAddress) socket.getRemoteSocketAddress();
-//		String remoteHostAddress = inetRemoteSocketAddress.getAddress().getHostAddress();
-//		int remoteHostPort = inetRemoteSocketAddress.getPort();
-
-		try {      
-			br = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
-			pw = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
-
-			while (true) {  
-				String request = br.readLine();
-				if (request == null) {
-					doQuit(pw);
+		
+		try {
+			//1. print remote socket address
+			InetSocketAddress remoteSocketAddress = 
+					(InetSocketAddress)socket.getRemoteSocketAddress();
+			ChatServer.consoleLog(
+				"connected by client[" +
+				remoteSocketAddress.getAddress().getHostAddress() + ":" + 
+				remoteSocketAddress.getPort() +
+				"]" );
+			
+			//2. create stream( from Basic Stream )
+			br = new BufferedReader( new InputStreamReader(socket.getInputStream(), "UTF-8") );
+			pw = new PrintWriter( new OutputStreamWriter( socket.getOutputStream(), "UTF-8"), true );
+			
+			//3. processing...
+			while( true ) {
+				String line = br.readLine();
+				if( line == null ) {
+					doQuit( pw );
+					ChatServer.consoleLog( "closed by client" );
 					break;
 				}
-
-				// 4. 프로토콜 분석
-				String[] tokens = request.split(":");
-				if ("join".equals(tokens[0])) {
-					doJoin(tokens[1], pw);
-					new ChatServerThread(socket,listWriters).start();
-				} else if ("message".equals(tokens[0])) {
-					doMessage(tokens[1]);
-				} else if ("quit".equals(tokens[0])) {
-					doQuit(pw);
-				} else {
-					System.out.println("알수없는 에러 : " + tokens[0]);
+				
+				String[] tokens = line.split( ":" );
+				if( "JOIN".equals( tokens[0] ) ) {
+					doJoin(tokens[1], pw );
+				} else if( "MESSAGE".equals( tokens[0] ) ) {
+					doMessage( tokens[1] );
+				} else if( "QUIT".equals( tokens[0] ) ) {
+					doQuit( pw );
 					break;
 				}
-
 			}
-
 		} catch (SocketException e) {
-			e.printStackTrace();
-			doQuit(pw);
+			doQuit( pw );
+			ChatServer.consoleLog( "abnormal closed by client" );
 		} catch (IOException e) {
-			e.printStackTrace();
-			doQuit(pw);
+			doQuit( pw );
+			ChatServer.consoleLog( "error:" + e );
 		} finally {
 			try {
 				if( socket != null &&
@@ -73,65 +83,55 @@ public class ChatServerThread extends Thread {
 					socket.close();
 				}
 			}catch( IOException e ) {
-				e.printStackTrace();
-			}
-		}
-
-		super.run();
-	}
-
-	private void doQuit(PrintWriter pw) {
-		removeWriter(pw);
-		String message = nickname + "님이 퇴장 하였습니다";
-		broadCast(message);
-	}
-
-	private void removeWriter(PrintWriter pw) {
-		synchronized (listWriters) {
-			listWriters.remove(pw);
-		}
-	}
-
-	private void doMessage(String string) {
-		String message = nickname + ":" + string;
-		synchronized (listWriters) {
-			broadCast(message);
-		}
-	}
-
-	private void doJoin(String nickName, PrintWriter pw) {
-		this.nickname = nickname;
-
-		String data = nickName + "님이 참여하였습니다.";
-		System.out.println(data);
-		broadCast(data);
-
-		/* writer pool에 저장 */
-		addWriter(pw);
-
-		// ack
-		pw.println("join:ok");
-	}
-
-	private void broadCast(String data) {
-		synchronized (listWriters) {
-			for (Writer writer : listWriters) {
-				PrintWriter printWriter = (PrintWriter) writer;
-				printWriter.println(data);
+				ChatServer.consoleLog( "error:" + e );
 			}
 		}
 	}
-
-	private void addWriter(PrintWriter pw) {
-		// -synchronized 키워드는 여러 스레드가 하나의 공유 객체에 접근할 때,
-		// 동기화를 보장해준다.
-		synchronized (listWriters) {
-			listWriters.add(pw);
+	
+	private void doQuit( PrintWriter printWriter ) {
+		deletePrintWriter( printWriter );
+		if(name != null ) {
+			broadcastMessage( name + "님이 퇴장 하였습니다." );
 		}
-
 	}
-	public static void log(String log) {
-		System.out.println("[serverThread] " + log);
+	
+	private void doMessage( String message ) {
+		broadcastMessage( name + ":" + message );
 	}
-
+	
+	private void doJoin(String name, PrintWriter printWriter ){
+		// 1. save nickname
+		this.name = name;
+	
+		// 2. broadcasting..
+		String message = name + "님이 입장했습니다";
+		broadcastMessage( message );
+		
+		//3. add PrintWriter
+		addPrintWriter( printWriter );
+		
+		//4. ack
+		printWriter.println( "JOIN:OK" );
+	}
+	
+	private void addPrintWriter( PrintWriter printWriter ) {
+		synchronized( listPrintWriter ) {
+			listPrintWriter.add( printWriter );
+		}
+	}
+	
+	private void deletePrintWriter( PrintWriter printWriter ) {
+		synchronized( listPrintWriter ) {
+			listPrintWriter.remove( printWriter );
+		}
+	}
+	
+	private void broadcastMessage( String message ) {
+		synchronized( listPrintWriter ) {
+			for( PrintWriter printWriter : listPrintWriter ) {
+				printWriter.println( message );
+			}
+		}
+	}
+	
 }

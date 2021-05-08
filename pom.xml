@@ -53,5 +53,6 @@
 		<module>practice05</module>
 		<module>finaltest</module>
 		<module>network</module>
+		<module>networkstudy</module>
 	</modules>
 </project>
