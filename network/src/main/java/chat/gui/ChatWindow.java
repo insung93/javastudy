@@ -1,4 +1,5 @@
 package chat.gui;
+
 import java.awt.BorderLayout;
 import java.awt.Button;
 import java.awt.Color;
@@ -12,6 +13,14 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.Socket;
+import java.net.SocketException;
 
 public class ChatWindow {
 
@@ -20,13 +29,19 @@ public class ChatWindow {
 	private Button buttonSend;
 	private TextField textField;
 	private TextArea textArea;
-	
-	public ChatWindow(String nickname) {
+	private String nickname;
+	private Socket socket;
+	private PrintWriter pw;
+	private BufferedReader br;
+
+	public ChatWindow(String nickname, Socket socket) {
 		frame = new Frame(nickname);
 		pannel = new Panel();
 		buttonSend = new Button("Send");
 		textField = new TextField();
 		textArea = new TextArea(30, 80);
+		this.nickname = nickname;
+		this.socket = socket;
 	}
 
 	public void show() {
@@ -36,9 +51,9 @@ public class ChatWindow {
 		// Button
 		buttonSend.setBackground(Color.GRAY);
 		buttonSend.setForeground(Color.WHITE);
-		buttonSend.addActionListener( new ActionListener() {
+		buttonSend.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed( ActionEvent actionEvent ) {
+			public void actionPerformed(ActionEvent actionEvent) {
 				sendMessage();
 			}
 		});
@@ -49,12 +64,12 @@ public class ChatWindow {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				char keyCode = e.getKeyChar();
-				if(keyCode == KeyEvent.VK_ENTER) {
+				if (keyCode == KeyEvent.VK_ENTER) {
 					sendMessage();
 				}
 			}
 		});
-		
+
 		// Pannel
 		pannel.setBackground(Color.LIGHT_GRAY);
 		pannel.add(textField);
@@ -73,38 +88,74 @@ public class ChatWindow {
 		});
 		frame.setVisible(true);
 		frame.pack();
-		
+
 		/**
 		 * 2. IOStream 생성
 		 */
-		
+
+		try {
+			pw = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"), true);
+			br = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
+
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+
 		/**
 		 * 3. Chat Client Thread 생성(Receive Thread)
 		 */
+		new ChatClientThread().start();
 	}
-	
+
 	private void finish() {
-		System.out.println("소켓 닫기 or 방나가기 프로토콜 구현");
-		System.exit(0);
+
+		try {
+			if (socket != null && socket.isClosed() == false) {
+				socket.close();
+			}
+			System.exit(0);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
-	
+
 	private void sendMessage() {
 		String message = textField.getText();
-		System.out.println("프로토콜 구현:" + message);
-		updateTextArea("마이콜:" + message);
+		pw.println("MESSAGE:" + message);
+
 		textField.setText("");
 		textField.requestFocus();
 	}
-	
+
 	private void updateTextArea(String message) {
 		textArea.append(message);
 		textArea.append("\n");
 	}
-	
-	private class ChatClientThread extends Thread{
+
+	private class ChatClientThread extends Thread {
+
 		@Override
 		public void run() {
-			//updateTextArea("...");
+			try {
+				while (true) {
+					String message = br.readLine();
+					if (message == null) {
+						break;
+					}
+					updateTextArea(message);
+				}
+			} catch (SocketException ex) {
+				consoleLog("" + ex);
+			} catch (IOException ex) {
+				consoleLog("다음 이유로 프로그램을 종료 합니다 :" + ex);
+			} finally {
+				finish();
+			}
 		}
-	}	
+	}
+
+	public static void consoleLog(String message) {
+		System.out.println("\n[chat client]" + message);
+	}
 }
