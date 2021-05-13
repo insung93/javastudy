@@ -53,7 +53,6 @@ public class EchoServerReceiveThread extends Thread {
 				e.printStackTrace();
 			}
 		}
-		super.run();
 	}
 	
 }

@@ -18,9 +18,9 @@ public class EchoClient2 {
 		try {
 			socket = new Socket();
 			socket.connect(new InetSocketAddress("127.0.0.1", EchoServer.PORT));
-
-			BufferedReader br = new BufferedReader((new InputStreamReader(socket.getInputStream())));
-			PrintWriter pw = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
+			
+			BufferedReader br = new BufferedReader((new InputStreamReader(socket.getInputStream(),"utf-8")));
+			PrintWriter pw = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(),"utf-8"),true);
 			scanner = new Scanner(System.in);
 			while (true) {
 				System.out.print(">");
@@ -28,7 +28,16 @@ public class EchoClient2 {
 				if ("exit".equals(line)) {
 					break;
 				}
-				pw.write(line);
+				//pw.write(line);
+				pw.println(line);
+				String data = br.readLine();
+				if (data == null) {
+					
+					break;
+				}
+
+				// 8. 콘솔 출력
+				System.out.println("<" + data);
 
 			}
 
