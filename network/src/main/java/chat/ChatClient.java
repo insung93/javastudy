@@ -17,7 +17,7 @@ public class ChatClient {
 	public static void main(String[] args) {
 		Socket socket = null;
 		Scanner scanner = null;
-		
+		 
 		try {
 			// 1.create scanner to keyboard
 			scanner = new Scanner( System.in );
