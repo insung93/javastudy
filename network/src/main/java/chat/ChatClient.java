@@ -19,7 +19,7 @@ public class ChatClient {
 		Scanner scanner = null;
 		    
 		try {
-			// 1.create scanner to keyboard
+			// 1.create scanner to keyboard    
 			scanner = new Scanner( System.in );
 			
 			// 2.create socket
