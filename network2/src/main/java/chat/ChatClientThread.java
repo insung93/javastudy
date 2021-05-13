@@ -18,7 +18,7 @@ public class ChatClientThread extends Thread {
 		try{
 			BufferedReader br = new BufferedReader( new InputStreamReader(socket.getInputStream(), "UTF-8" ) );
 
-			while( true ) {
+			while( true ) { 
 				String message = br.readLine();
 				if( message == null ) {
 					break;
